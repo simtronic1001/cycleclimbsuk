@@ -1,0 +1,202 @@
+/* =========================================
+   0. DESIGN SYSTEM (CSS Variables)
+   ========================================= */
+:root {
+    --brand-orange: #fc4c02;
+    --brand-orange-hover: #e34402;
+    --bg-main: #f0f2f5;
+    --bg-panel: #ffffff;
+    --bg-alt: #f9f9f9;
+    --bg-dark: #333333;
+    --text-main: #333333;
+    --text-light: #ffffff;
+    --text-muted: #999999;
+    --border-light: #eeeeee;
+    --border-dark: #dddddd;
+    --success-text: #2e7d32;
+    --danger-text: #d32f2f;
+    --danger-border: #ffcccc;
+}
+
+/* =========================================
+   1. GLOBAL STYLES
+   ========================================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+h1, h2, h3 { color: var(--bg-dark); margin-bottom: 15px; }
+a { color: var(--brand-orange); text-decoration: none; transition: 0.2s; }
+a:hover { text-decoration: underline; }
+.container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }
+
+/* =========================================
+   2. NAVIGATION
+   ========================================= */
+.navbar {
+    background-color: var(--bg-dark);
+    border-bottom: 2px solid var(--brand-orange);
+    padding: 15px 20px;
+}
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo-temp { font-weight: 800; font-size: 1.4rem; color: var(--text-light); }
+.logo-temp span { color: var(--brand-orange); }
+.nav-links { display: flex; gap: 20px; align-items: center; font-size: 0.95rem; font-weight: 600; }
+.nav-links a { color: var(--text-light); }
+.nav-links a:hover { color: var(--brand-orange); text-decoration: none; }
+.user-pill {
+    background: rgba(255,255,255,0.1);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* =========================================
+   3. BUTTONS & FORMS
+   ========================================= */
+.strava-btn, .outline-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    border: none;
+}
+.strava-btn { background: var(--brand-orange); color: var(--text-light); }
+.strava-btn:hover { background: var(--brand-orange-hover); text-decoration: none; color: var(--text-light); }
+.outline-btn { background: transparent; color: var(--text-main); border: 2px solid var(--border-dark); }
+.outline-btn.opac { opacity: 0.7; color: var(--text-light); border-color: rgba(255,255,255,0.5); }
+.outline-btn.opac:hover { border-color: var(--text-light); background: rgba(255,255,255,0.1); }
+
+.input-wrapper { margin-bottom: 15px; }
+.input-wrapper label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; }
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="date"] {
+    width: 100%; padding: 12px; border: 1px solid var(--border-dark); border-radius: 6px;
+    font-size: 1rem; background: var(--bg-panel);
+}
+input:focus { outline: none; border-color: var(--brand-orange); }
+
+/* =========================================
+   4. BOXES & LAYOUTS
+   ========================================= */
+.auth-box {
+    background: var(--bg-panel);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-light);
+    max-width: 400px;
+    margin: 60px auto;
+    text-align: center;
+}
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+.feature-item {
+    background: var(--bg-panel);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-light);
+}
+.feature-item span { font-size: 2.5rem; display: block; margin-bottom: 15px; }
+.pitch-cta { margin-top: 30px; padding: 30px; border-top: 1px solid var(--border-dark); }
+
+/* =========================================
+   5. HOMEPAGE SPECIFIC
+   ========================================= */
+.main-header {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('images/Mountain.png') no-repeat center center / cover;
+    padding: 80px 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.main-header h1 { font-size: 3rem; color: var(--text-light); text-shadow: 2px 2px 4px rgba(0,0,0,0.6); }
+.main-header p { font-size: 1.2rem; color: rgba(255,255,255,0.8); }
+
+.progress-box, .county-section { max-width: 800px; margin-left: auto; margin-right: auto; }
+
+.progress-box {
+    background: var(--bg-panel);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+    border: 1px solid var(--border-light);
+}
+.progress-bar-container { background: var(--bg-main); height: 24px; border-radius: 12px; overflow: hidden; margin: 15px 0 5px; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--brand-orange), #ff7b00); transition: 0.5s; }
+
+.county-section { margin-bottom: 20px; }
+.county-title {
+    font-size: 1.5rem; color: var(--bg-dark); border-bottom: 2px solid var(--brand-orange);
+    padding-bottom: 10px; margin-bottom: 10px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.county-title:hover { color: var(--brand-orange); }
+
+.accordion-item {
+    background: var(--bg-panel); border: 1px solid var(--border-light);
+    border-radius: 8px; margin-bottom: 10px; overflow: hidden; transition: 0.2s;
+}
+.accordion-header {
+    padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; background: var(--bg-panel);
+}
+.climb-title { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+.climb-preview-stats { font-size: 0.9rem; color: var(--text-muted); }
+
+.accordion-content { display: none; padding: 20px; background: var(--bg-alt); border-top: 1px solid var(--border-light); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.stat-box { background: var(--bg-panel); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--border-light); }
+.stat-label { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+.stat-value { display: block; font-size: 1.2rem; font-weight: bold; color: var(--text-main); margin-top: 5px; }
+.chart-container { height: 200px; width: 100%; margin-top: 20px; background: var(--bg-panel); border-radius: 8px; padding: 10px; border: 1px solid var(--border-light); }
+
+.tick-box {
+    width: 30px; height: 30px; border: 2px solid var(--border-dark); border-radius: 6px;
+    display: flex; justify-content: center; align-items: center; cursor: pointer; background: var(--bg-main); transition: 0.2s;
+}
+.tick-box.completed { background: var(--success-text); border-color: var(--success-text); color: white; }
+.tick-box.completed::after { content: '✔'; font-size: 1.2rem; }
+
+/* =========================================
+   6. ALERTS & FOOTER
+   ========================================= */
+.error-msg { background: var(--danger-border); color: var(--danger-text); padding: 12px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; }
+
+.main-footer {
+    background: var(--bg-dark); color: var(--text-light); padding: 40px 20px;
+    margin-top: 60px; border-top: 4px solid var(--brand-orange); text-align: center;
+}
+.footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.footer-legal a { color: var(--text-light); margin: 0 10px; font-size: 0.9rem; text-decoration: underline; }
+.disclaimer { border-top: 1px solid #555; margin-top: 20px; padding-top: 20px; opacity: 0.8; font-size: 0.8rem; }
+.strava-view-link { color: var(--brand-orange) !important; font-weight: bold; text-decoration: underline; }
+
+@media (max-width: 768px) {
+    .feature-grid { grid-template-columns: 1fr; }
+    .nav-container, .footer-content { flex-direction: column; gap: 15px; }
+    .accordion-header { flex-wrap: wrap; gap: 10px; }
+    .climb-title { width: 100%; }
+}
