@@ -22,6 +22,8 @@ $page_title = isset($custom_title) ? $custom_title . " | Cycle Climbs UK" : "Cyc
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fc4c02">
     <title><?php echo $page_title; ?></title>
 </head>
 <body>

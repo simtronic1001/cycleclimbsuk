@@ -1,7 +1,5 @@
 <?php
 include 'db.php';
-
-session_start();
 include  'header.php';
 $error = '';
 $success = '';

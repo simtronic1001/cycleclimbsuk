@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include 'db.php';
 include 'config.php';
 
@@ -63,5 +63,7 @@ $stmt->execute([
     $_SESSION['user_id']
 ]);
 
-header("Location: index.php?status=connected");
+// Instantly trigger the historical queue sync!
+header("Location: start_sync.php");
 exit();
+?>

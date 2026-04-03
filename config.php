@@ -20,11 +20,10 @@ if (file_exists(__DIR__ . '/.env')) {
             (substr($value, 0, 1) === "'" && substr($value, -1) === "'")) {
             $value = substr($value, 1, -1);
         }
-        if (getenv($name) === false) {
+        // --- CHANGE TO THIS ---
             putenv("$name=$value");
             $_ENV[$name] = $value;
             $_SERVER[$name] = $value;
-        }
     }
 }
 
@@ -43,7 +42,7 @@ function env_required(string $key, string $hint = ''): string {
 // Load Strava config from environment
 define('STRAVA_CLIENT_ID', env_required('STRAVA_CLIENT_ID', 'Set this in your .env or environment'));
 define('STRAVA_CLIENT_SECRET', env_required('STRAVA_CLIENT_SECRET', 'Keep this out of source control'));
-define('STRAVA_REDIRECT_URI', env_required('STRAVA_REDIRECT_URI', 'e.g. http://localhost/strava_callback.php'));
+define('STRAVA_REDIRECT_URI', env_required('STRAVA_REDIRECT_URI', 'e.g. https://cycleclimbsuk.simtech.site/strava_callback.php'));
 
 // Optional verify token for webhook verification (create a random string and set as env)
 $STRAVA_WEBHOOK_VERIFY_TOKEN = getenv('STRAVA_WEBHOOK_VERIFY_TOKEN') ?: null;

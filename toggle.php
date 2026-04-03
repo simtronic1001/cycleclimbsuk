@@ -1,6 +1,5 @@
 <?php
 include 'db.php';
-session_start();
 
 // Redirect to login if they try to click without being logged in
 if (!isset($_SESSION['user_id'])) {

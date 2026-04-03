@@ -1,7 +1,10 @@
 <?php 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 include 'db.php'; 
 include 'config.php';
-session_start();
+
 
 function formatTime($seconds) {
     if (empty($seconds)) return '--';
@@ -11,13 +14,35 @@ function formatTime($seconds) {
 }
 
 $is_logged_in = isset($_SESSION['user_id']);
+$has_strava = false;
 $groupedClimbs = [];
 $completedCount = 0;
 $totalClimbs = 0;
 $percent = 0;
+$pending_count = 0;
+$failed_count = 0;
 
 if ($is_logged_in) {
     $current_user_id = $_SESSION['user_id'];
+    
+    // Check if the user has connected Strava
+    $u_stmt = $pdo->prepare("SELECT strava_token FROM users WHERE id = ?");
+    $u_stmt->execute([$current_user_id]);
+    $user_data = $u_stmt->fetch();
+    if (!empty($user_data['strava_token'])) {
+        $has_strava = true;
+    }
+
+    // NEW: Count pending and failed sync jobs
+    $stmt_pending = $pdo->prepare("SELECT COUNT(*) FROM sync_queue WHERE user_id = ? AND status = 'pending'");
+    $stmt_pending->execute([$current_user_id]);
+    $pending_count = $stmt_pending->fetchColumn();
+
+    $stmt_failed = $pdo->prepare("SELECT COUNT(*) FROM sync_queue WHERE user_id = ? AND status = 'failed'");
+    $stmt_failed->execute([$current_user_id]);
+    $failed_count = $stmt_failed->fetchColumn();
+
+    // Fetch Climbs
     $sql = "SELECT c.*, uc.id AS is_done, uc.user_pr 
             FROM climbs c 
             LEFT JOIN user_climbs uc ON c.id = uc.climb_id AND uc.user_id = ?
@@ -56,28 +81,65 @@ if ($is_logged_in) {
                 <p>Connect your account once, and we'll automatically scan your history.</p>
             </div>
         </div>
-        
         <div class="pitch-cta text-center">
             <p>Ready to start ticking off the list?</p>
             <a href="register.php" class="strava-btn">Create Free Account</a>
             <a href="login.php" class="outline-btn" style="margin-left: 10px;">Log In</a>
         </div>
-
     <?php else: ?>
-        <div class="progress-box">
-            <h3>Your Progress: <?php echo $completedCount; ?> / <?php echo $totalClimbs; ?> Climbs</h3>
-            <div class="progress-bar-container">
-                <div class="progress-fill" style="width: <?php echo $percent; ?>%;"></div>
+        
+        <?php if (!$has_strava): ?>
+            <div class="feature-item text-center" style="margin-bottom: 30px; border: 2px solid var(--brand-orange);">
+                <h2 style="color: var(--brand-orange); margin-bottom: 10px;">Connect Your Strava Account</h2>
+                <p style="margin-bottom: 20px;">To automatically track your progress and pull in your historical climbs, connect your account below.</p>
+                <a href="<?php echo $strava_auth_url; ?>" class="strava-btn">Connect with Strava</a>
             </div>
-        </div>
+        <?php else: ?>
+            
+            <div style="max-width: 800px; margin: 0 auto;">
+                <?php if ($pending_count > 0): ?>
+                    <div style="background: rgba(33, 150, 243, 0.1); color: #0d47a1; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(33, 150, 243, 0.3);">
+                        ⏳ <strong>Sync in Progress:</strong> We are analyzing <?php echo $pending_count; ?> historic activities. This runs automatically in the background. Refresh in a few minutes to see updated totals!
+                    </div>
+                <?php endif; ?>
 
-        <?php foreach ($groupedClimbs as $county => $countyClimbs): ?>
-            <div class="county-section">
-                <h2 class="county-title" onclick="toggleCounty(this)">
-                    <?php echo htmlspecialchars($county); ?>
-                    <span class="county-toggle-icon">▼</span>
+                <?php if ($failed_count > 0): ?>
+                    <div style="background: rgba(244, 67, 54, 0.1); color: #c62828; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(244, 67, 54, 0.3);">
+                        ⚠️ <strong>Sync Interrupted:</strong> <?php echo $failed_count; ?> activity files could not be read from Strava. 
+                        <a href="retry_sync.php" class="outline-btn" style="padding: 4px 10px; font-size: 0.8rem; margin-left: 10px; color: #c62828; border-color: rgba(244, 67, 54, 0.5);">Try Again</a>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="progress-box">
+                <h3>Your Progress: <?php echo $completedCount; ?> / <?php echo $totalClimbs; ?> Climbs</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-fill" style="width: <?php echo $percent; ?>%;"></div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+       <?php foreach ($groupedClimbs as $county => $countyClimbs): ?>
+    <?php 
+        // 1. Calculate stats for THIS county only
+        $countyTotal = count($countyClimbs);
+        $countyDone = 0;
+        foreach ($countyClimbs as $c) {
+            if ($c['is_done']) $countyDone++;
+        }
+    ?>
+    <div class="county-section">
+    <h2 class="county-title" onclick="toggleCounty(this)" style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="county-name"><?php echo htmlspecialchars($county); ?></span>
+        
+        <div class="county-meta" style="display: flex; align-items: center; gap: 15px;">
+            <span class="county-stats" style="font-size: 0.85rem; font-weight: normal; opacity: 0.6;">
+                <?php echo $countyDone; ?> / <?php echo $countyTotal; ?> Completed
+            </span>
+            <span class="county-toggle-icon">▼</span>
+        </div>
+    </h2>
                 </h2>
-                
                 <div class="county-climbs" style="display: none;">
                     <?php foreach ($countyClimbs as $climb): ?>
                         <div class="accordion-item">
@@ -93,7 +155,6 @@ if ($is_logged_in) {
                                      onclick="event.stopPropagation(); toggleClimb(<?php echo $climb['id']; ?>, this);">
                                 </div>
                             </div>
-                            
                             <div class="accordion-content">
                                 <div class="stats-grid">
                                     <div class="stat-box">
@@ -148,13 +209,10 @@ function toggleCounty(element) {
 function toggleAccordion(element) {
     const details = element.nextElementSibling;
     const isOpen = details.style.display === 'block';
-    
-    // Close other open accordions in this county
     const parentCounty = element.closest('.county-climbs');
     if (parentCounty) {
         parentCounty.querySelectorAll('.accordion-content').forEach(el => el.style.display = 'none');
     }
-    
     if (!isOpen) {
         details.style.display = 'block';
         const canvas = details.querySelector('canvas.elevationChart');
@@ -185,9 +243,7 @@ function toggleAccordion(element) {
                         }
                     });
                     canvas.classList.add('chart-rendered');
-                } catch (e) {
-                    console.error("No elevation data found.");
-                }
+                } catch (e) { console.error("No elevation data found."); }
             }
         }
     }

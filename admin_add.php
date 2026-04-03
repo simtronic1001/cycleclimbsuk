@@ -1,6 +1,6 @@
 <?php
 include 'db.php';
-session_start();
+
 
 // --- 1. THE SECURITY GATE ---
 // Check if user is logged in

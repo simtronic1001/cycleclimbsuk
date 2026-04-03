@@ -1,8 +1,7 @@
 <?php
 
 include 'db.php';
-session_start();
-include  'header.php';
+
 
 $error = '';
 
@@ -24,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Invalid email or password!";
     }
 }
+include  'header.php';
 ?>
 
 <!DOCTYPE html>

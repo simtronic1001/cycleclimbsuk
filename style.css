@@ -76,6 +76,7 @@ a:hover { text-decoration: underline; }
     text-align: center;
     transition: all 0.2s;
     border: none;
+    white-space: nowrap; /* Prevents text from stacking on mobile */
 }
 .strava-btn { background: var(--brand-orange); color: var(--text-light); }
 .strava-btn:hover { background: var(--brand-orange-hover); text-decoration: none; color: var(--text-light); }
@@ -149,24 +150,52 @@ input:focus { outline: none; border-color: var(--brand-orange); }
 
 .county-section { margin-bottom: 20px; }
 .county-title {
-    font-size: 1.5rem; color: var(--bg-dark); border-bottom: 2px solid var(--brand-orange);
-    padding-bottom: 10px; margin-bottom: 10px; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+    padding: 15px 20px;
+    background: var(--danger-border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-light);
+    transition: all 0.2s ease;
+    /* This ensures children can use flex alignment */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.county-title:hover { color: var(--brand-orange); }
-
+.county-title:hover {
+    background: #fdfdfd;
+    border-color: var(--brand-orange);
+}
+.county-name {
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+.county-meta {
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* Prevents the counter from wrapping on small screens */
+}
+.county-stats {
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+}
 .accordion-item {
-    background: var(--bg-panel); border: 1px solid var(--border-light);
+    background: var(--bg-dark); border: 1px solid var(--border-light);
     border-radius: 8px; margin-bottom: 10px; overflow: hidden; transition: 0.2s;
 }
+.county-climbs{
+    background-color: var( --bg-main);
+    border-radius: 25px;
+}
+
 .accordion-header {
     padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
     cursor: pointer; background: var(--bg-panel);
 }
 .climb-title { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
-.climb-preview-stats { font-size: 0.9rem; color: var(--text-muted); }
+.climb-preview-stats {align-content: flex-end; font-size: 0.9rem; color: var(--text-muted); }
 
-.accordion-content { display: none; padding: 20px; background: var(--bg-alt); border-top: 1px solid var(--border-light); }
+.accordion-content { display: none; padding: 20px; background: var(--bg-dark); border-top: 1px solid var(--border-light); }
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 20px; }
 .stat-box { background: var(--bg-panel); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--border-light); }
 .stat-label { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
